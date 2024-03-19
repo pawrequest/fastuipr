@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+version = "0.2.0"
+name = "fastuipr"
+description = "Build better UIs faster."
+authors = [{ name = "Samuel Colvin", email = "s@muelcolvin.com" }]
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic[email]>=2.5.2",
+    "fastapi>=0.104",
+    "python-multipart>=0.0.6",
+    "fastui"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "sphinx",
+    "sphinx-rtd-theme",
+    "myst-parser",
+    'httpx',
+    'dirty_equals',
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.rye]
+managed = true
