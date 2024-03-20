@@ -1,9 +1,9 @@
 import typing as _t
 
 import pydantic as _p
-
 from fastui import class_name as _class_name, components as c, events as e
-from fastuipr import styles
+
+from fastuipr import styles, types_
 
 
 def back_link(text: str = 'Back', class_name=None) -> c.Link:
@@ -192,28 +192,32 @@ async def page_w_alerts(
         navbar=None,
         footer=None,
         class_name=None,
-        alerts: list[AlertProt] | None = None,
+        alert_dict: types_.AlertDict | None = None  # msg -> type
+
 ) -> list['c.AnyComponent']:
-    al_rows = await get_alert_rows(alerts) if alerts else []
-    components_ = [
-        *al_rows,
-        *components,
-    ]
-    contained = [c.Div(components=components_, class_name=styles.CONTAINER_STYLE)]
+    al_rows = await get_alert_rows(alert_dict)
     return [
         c.PageTitle(text=f'PawRequest dev - {title}' if title else ''),
         *((navbar,) if navbar else ()),
         c.Page(
-            components=contained,
-            class_name=class_name,
+            components=[
+                c.Div(
+                    components=[
+                        *al_rows,
+                        *components,
+                    ],
+                    class_name=styles.CONTAINER_STYLE
+                )
+            ],
+            class_name=f'{styles.PAGE_STYLE} {class_name}' if class_name else styles.PAGE_STYLE,
         ),
         *((footer,) if footer else ()),
     ]
 
 
-async def get_alert_rows(alerts: list[AlertProt]) -> list[c.Div]:
-    if not alerts:
+async def get_alert_rows(alert_dict: types_.AlertDict) -> list[c.Div]:
+    if not alert_dict:
         return []
-    alert_txts = [c.Text(text=al.message) for al in alerts]
+    alert_txts = [c.Text(text=_) for _ in alert_dict.keys()]
     alert_rows = list_of_divs(components=alert_txts, class_name=styles.ALERT_STYLE)
     return alert_rows
